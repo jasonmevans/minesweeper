@@ -3,21 +3,32 @@ const MARKED_CELL = "⚠️";
 const BOOM = "💥";
 const NUMBERS = ["0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣"];
 
+class Cell {
+  constructor({ value, bomb, flagged }) {
+    this.value = value;
+    this.bomb = bomb;
+    this.flagged = flagged;
+  }
+  get hidden() {
+    return this.value === null;
+  }
+  get icon() {
+    return NUMBERS[this.value];
+  }
+}
+
 class Game {
   constructor(bombs) {
     // setup game board
     this.board = bombs.map(row => {
-      return row.map(col => ({
-        bomb: Boolean(col),
-        flagged: false,
-        value: null,
-        get hidden() {
-          return this.value === null;
-        },
-        get icon() {
-          return NUMBERS[this.value] + " ";
-        }
-      }));
+      return row.map(
+        col =>
+          new Cell({
+            bomb: Boolean(col),
+            flagged: false,
+            value: null
+          })
+      );
     });
   }
 
