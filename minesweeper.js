@@ -13,17 +13,29 @@ class Game {
         value: null,
         get hidden() {
           return this.value === null;
+        },
+        get icon() {
+          return NUMBERS[this.value] + " ";
         }
       }));
     });
   }
 
   render() {
-    return this.done(
-      this.board.map(row => {
-        return row.map(col => col.value);
-      })
-    );
+    return this.board.map(row => {
+      return row.map(col => {
+        if (col.hidden) {
+          if (col.flagged) {
+            return MARKED_CELL + " ";
+          }
+          return BLANK_CELL;
+        }
+        if (col.bomb) {
+          return BOOM;
+        }
+        return col.icon;
+      });
+    });
   }
 
   boardOperation(fn, value) {
@@ -65,25 +77,20 @@ class Game {
       return this.board[row][col].bomb;
     };
     const countBombs = (row, col) => {
-      return this.cellOperation(
-        row,
-        col,
-        (cell, r, c, v) => v + Number(cell.bomb),
-        0
-      );
+      return this.cellOperation(row, col, (cell, r, c, v) => v + cell.bomb, 0);
     };
 
     if (isBomb(row, col)) {
       // you lose!
       this.boardOperation((cell, r, c) => {
         if (cell.hidden) {
-          setCell(r, c, cell.bomb ? BOOM : NUMBERS[countBombs(r, c)]);
+          setCell(r, c, countBombs(r, c));
         }
       });
     } else {
       const reveal = (row, col) => {
         const count = countBombs(row, col);
-        setCell(row, col, NUMBERS[count]);
+        setCell(row, col, count);
         if (count === 0) {
           this.cellOperation(row, col, (cell, r, c) => {
             if (cell.hidden) reveal(r, c);
@@ -93,7 +100,7 @@ class Game {
       reveal(row, col);
     }
 
-    return this.render();
+    return this.done();
   }
 
   flag(row, col) {
