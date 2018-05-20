@@ -33,20 +33,24 @@ class Game {
   }
 
   render() {
-    return this.board.map(row => {
-      return row.map(col => {
-        if (col.hidden) {
-          if (col.flagged) {
-            return MARKED_CELL + " ";
+    return [
+      this.columns,
+      ...this.board.map(row => {
+        return row.map(col => {
+          if (col.hidden) {
+            if (col.flagged) {
+              return MARKED_CELL + " ";
+            }
+            return BLANK_CELL;
           }
-          return BLANK_CELL;
-        }
-        if (col.bomb) {
-          return BOOM;
-        }
-        return col.icon;
-      });
-    });
+          if (col.bomb) {
+            return BOOM;
+          }
+          return col.icon + " ";
+        });
+      }),
+      this.columns
+    ];
   }
 
   boardOperation(fn, value) {
@@ -135,6 +139,12 @@ class Game {
     }
     return new Score(
       this.boardOperation((cell, r, c, s) => s + (cell.bomb && cell.flagged), 0)
+    );
+  }
+
+  get columns() {
+    return Array.from(Array(this.board[0].length), (i, n) =>
+      n.toLocaleString("en-US", { minimumIntegerDigits: 2 })
     );
   }
 

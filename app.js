@@ -23,7 +23,13 @@ function log() {
   console.clear();
   console.log(
     this.render()
-      .map(line => line.join(" "))
+      .map((line, i) => {
+        const r =
+          i === 0 || i - 1 === this.board.length
+            ? "--"
+            : (i - 1).toLocaleString("en-US", { minimumIntegerDigits: 2 });
+        return `${r} ${line.join(" ")} ${r}`;
+      })
       .join("\n")
   );
   console.log(
