@@ -33,9 +33,13 @@ class Game {
   }
 
   render() {
+    const columns = Array.from(Array(this.board[0].length), (i, n) =>
+      n.toLocaleString("en-US", { minimumIntegerDigits: 2 })
+    );
+
     return [
-      this.columns,
-      ...this.board.map(row => {
+      columns,
+      ...this.board.map((row, r) => {
         return row.map(col => {
           if (col.hidden) {
             if (col.flagged) {
@@ -49,8 +53,14 @@ class Game {
           return col.icon + " ";
         });
       }),
-      this.columns
-    ];
+      columns
+    ].map((row, r) => {
+      const n =
+        r === 0 || r - 1 === this.board.length
+          ? "--"
+          : (r - 1).toLocaleString("en-US", { minimumIntegerDigits: 2 });
+      return [n, ...row, n];
+    });
   }
 
   boardOperation(fn, value) {
@@ -139,12 +149,6 @@ class Game {
     }
     return new Score(
       this.boardOperation((cell, r, c, s) => s + (cell.bomb && cell.flagged), 0)
-    );
-  }
-
-  get columns() {
-    return Array.from(Array(this.board[0].length), (i, n) =>
-      n.toLocaleString("en-US", { minimumIntegerDigits: 2 })
     );
   }
 
