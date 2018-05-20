@@ -108,6 +108,25 @@ class Game {
     return this.done();
   }
 
+  get bombCount() {
+    return this.boardOperation((cell, r, c, v) => v + cell.bomb, 0);
+  }
+
+  get score() {
+    const ctx = this;
+    class Score extends Number {
+      get total() {
+        return ctx.bombCount;
+      }
+      get win() {
+        return +this === this.total;
+      }
+    }
+    return new Score(
+      this.boardOperation((cell, r, c, s) => s + (cell.bomb && cell.flagged), 0)
+    );
+  }
+
   done(state) {
     const ctx = this;
     return {
