@@ -9,10 +9,12 @@ class Game {
     });
   }
 
-  render(bombs) {
-    return this.board.map(row => {
-      return row.map(col => (bombs ? (col.bomb ? "B" : col.value) : col.value));
-    });
+  render() {
+    return this.done(
+      this.board.map(row => {
+        return row.map(col => col.value);
+      })
+    );
   }
 
   boardOperation(fn) {
@@ -67,26 +69,25 @@ class Game {
     if (isBomb(row, col)) {
       // you lose!
       this.boardOperation((cell, r, c) => {
-        if (!isRevealed(cell) && !cell.bomb) {
-          cell.value = `${countBombs(r, c)}`;
+        if (!isRevealed(cell)) {
+          cell.value = cell.bomb ? "B" : `${countBombs(r, c)}`;
         }
       });
-      return this.done(this.render(true));
+    } else {
+      const reveal = (row, col) => {
+        const count = countBombs(row, col);
+        setCell(row, col, count);
+        if (count === 0) {
+          this.cellOperation(row, col, (cell, r, c) => {
+            if (isRevealed(cell)) return;
+            reveal(r, c);
+          });
+        }
+      };
+      reveal(row, col);
     }
 
-    const reveal = (row, col) => {
-      const count = countBombs(row, col);
-      setCell(row, col, count);
-      if (count === 0) {
-        this.cellOperation(row, col, (cell, r, c) => {
-          if (isRevealed(cell)) return;
-          if (this.inRange(r, c)) reveal(r, c);
-        });
-      }
-    };
-    reveal(row, col);
-
-    return this.done(this.render());
+    return this.render();
   }
 
   done(state) {

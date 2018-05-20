@@ -10,6 +10,7 @@ const game = new Minesweeper(bombs);
 
 const log = state => console.log(state);
 
+game.render().then(log);
 game.move(0, 3).then(log);
 game.move(3, 0).then(log);
 game.move(0, 0).then(log);
