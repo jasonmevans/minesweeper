@@ -48,8 +48,8 @@ class Game {
   }
 
   move(row, col) {
-    const setCell = (row, col, count) => {
-      this.board[row][col].value = `${count}`;
+    const setCell = (row, col, value) => {
+      this.board[row][col].value = value;
     };
     const isBomb = (row, col) => {
       return this.board[row][col].bomb;
@@ -70,13 +70,13 @@ class Game {
       // you lose!
       this.boardOperation((cell, r, c) => {
         if (!isRevealed(cell)) {
-          cell.value = cell.bomb ? "B" : `${countBombs(r, c)}`;
+          setCell(r, c, cell.bomb ? "B" : `${countBombs(r, c)}`);
         }
       });
     } else {
       const reveal = (row, col) => {
         const count = countBombs(row, col);
-        setCell(row, col, count);
+        setCell(row, col, `${count}`);
         if (count === 0) {
           this.cellOperation(row, col, (cell, r, c) => {
             if (isRevealed(cell)) return;
