@@ -56,9 +56,12 @@ class Game {
       return cell.value !== "_";
     };
     const countBombs = (row, col) => {
-      return this.cellOperation(row, col, (cell, r, c, v) => {
-        return v + Number(cell.bomb);
-      });
+      return this.cellOperation(
+        row,
+        col,
+        (cell, r, c, v) => v + Number(cell.bomb),
+        0
+      );
     };
 
     if (isBomb(row, col)) {
