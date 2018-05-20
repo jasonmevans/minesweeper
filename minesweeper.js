@@ -1,5 +1,7 @@
-const BLANK_CELL = "-";
-const MARKED_CELL = "💣";
+const BLANK_CELL = "🔲";
+const MARKED_CELL = "⚠️";
+const BOOM = "💥";
+const NUMBERS = ["0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣"];
 
 class Game {
   constructor(bombs) {
@@ -7,7 +9,10 @@ class Game {
     this.board = bombs.map(row => {
       return row.map(col => ({
         bomb: Boolean(col),
-        value: BLANK_CELL
+        value: BLANK_CELL,
+        get hidden() {
+          return this.value === BLANK_CELL || this.value === MARKED_CELL;
+        }
       }));
     });
   }
@@ -18,6 +23,15 @@ class Game {
         return row.map(col => col.value);
       })
     );
+  }
+
+  done(state) {
+    const ctx = this;
+    return {
+      then(fn) {
+        fn.call(ctx, state);
+      }
+    };
   }
 
   boardOperation(fn, value) {
@@ -58,9 +72,6 @@ class Game {
     const isBomb = (row, col) => {
       return this.board[row][col].bomb;
     };
-    const isRevealed = cell => {
-      return cell.value !== BLANK_CELL && cell.value !== MARKED_CELL;
-    };
     const countBombs = (row, col) => {
       return this.cellOperation(
         row,
@@ -73,18 +84,17 @@ class Game {
     if (isBomb(row, col)) {
       // you lose!
       this.boardOperation((cell, r, c) => {
-        if (!isRevealed(cell)) {
-          setCell(r, c, cell.bomb ? "💥" : `${countBombs(r, c)}`);
+        if (cell.hidden) {
+          setCell(r, c, cell.bomb ? BOOM : NUMBERS[countBombs(r, c)]);
         }
       });
     } else {
       const reveal = (row, col) => {
         const count = countBombs(row, col);
-        setCell(row, col, `${count}`);
+        setCell(row, col, NUMBERS[count]);
         if (count === 0) {
           this.cellOperation(row, col, (cell, r, c) => {
-            if (isRevealed(cell)) return;
-            reveal(r, c);
+            if (cell.hidden) reveal(r, c);
           });
         }
       };
@@ -99,15 +109,6 @@ class Game {
       this.board[row][col].value = MARKED_CELL;
     }
     return this.render();
-  }
-
-  done(state) {
-    const ctx = this;
-    return {
-      then(fn) {
-        fn.call(ctx, state);
-      }
-    };
   }
 }
 
