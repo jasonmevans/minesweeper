@@ -17,7 +17,7 @@ class Cell {
   }
 }
 
-class Game {
+class Minesweeper {
   constructor(bombs) {
     // setup game board
     this.board = bombs.map(row => {
@@ -162,4 +162,4 @@ class Game {
   }
 }
 
-module.exports = Game;
+module.exports = Minesweeper;
