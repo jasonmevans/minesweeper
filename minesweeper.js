@@ -17,12 +17,13 @@ class Game {
     );
   }
 
-  boardOperation(fn) {
+  boardOperation(fn, value) {
     for (let r = 0; r < this.board.length; r++) {
       for (let c = 0; c < this.board[0].length; c++) {
-        fn.call(this, this.board[r][c], r, c);
+        value = fn.call(this, this.board[r][c], r, c, value);
       }
     }
+    return value;
   }
 
   cellOperation(row, col, fn, value = null) {
