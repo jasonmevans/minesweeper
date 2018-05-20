@@ -17,7 +17,8 @@ const game = new Minesweeper(bombs);
 
 const log = state => {
   console.clear();
-  console.log(state.map(line => line.join(" ")).join("\n"));
+  console.log(state.map(line => line.join("\t")).join("\n"));
+  // console.table(state);
 };
 
 game.render().then(log);
@@ -31,3 +32,7 @@ game.move(2, 3).then(log);
 game.move(2, 4).then(log);
 game.move(2, 6).then(log);
 game.move(0, 6).then(log);
+game.mark(3, 3).then(log);
+game.mark(3, 4).then(log);
+game.move(0, 1).then(log);
+game.mark(0, 2).then(log);

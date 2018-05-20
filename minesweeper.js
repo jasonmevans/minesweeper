@@ -1,10 +1,13 @@
+const BLANK_CELL = "-";
+const MARKED_CELL = "💣";
+
 class Game {
   constructor(bombs) {
     // setup game board
     this.board = bombs.map(row => {
       return row.map(col => ({
         bomb: Boolean(col),
-        value: "_"
+        value: BLANK_CELL
       }));
     });
   }
@@ -56,7 +59,7 @@ class Game {
       return this.board[row][col].bomb;
     };
     const isRevealed = cell => {
-      return cell.value !== "_";
+      return cell.value !== BLANK_CELL && cell.value !== MARKED_CELL;
     };
     const countBombs = (row, col) => {
       return this.cellOperation(
@@ -71,7 +74,7 @@ class Game {
       // you lose!
       this.boardOperation((cell, r, c) => {
         if (!isRevealed(cell)) {
-          setCell(r, c, cell.bomb ? "B" : `${countBombs(r, c)}`);
+          setCell(r, c, cell.bomb ? "💥" : `${countBombs(r, c)}`);
         }
       });
     } else {
@@ -88,6 +91,13 @@ class Game {
       reveal(row, col);
     }
 
+    return this.render();
+  }
+
+  mark(row, col) {
+    if ((this.board[row][col].value = BLANK_CELL)) {
+      this.board[row][col].value = MARKED_CELL;
+    }
     return this.render();
   }
 
