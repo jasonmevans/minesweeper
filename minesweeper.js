@@ -1,7 +1,7 @@
 class Game {
   constructor(bombs) {
     // setup game board
-    this.gameBoard = bombs.map(row => {
+    this.board = bombs.map(row => {
       return row.map(col => ({
         bomb: Boolean(col),
         value: "_"
@@ -10,15 +10,15 @@ class Game {
   }
 
   render(bombs) {
-    return this.gameBoard.map(row => {
+    return this.board.map(row => {
       return row.map(col => (bombs ? (col.bomb ? "B" : col.value) : col.value));
     });
   }
 
   boardOperation(fn) {
-    for (let r = 0; r < this.gameBoard.length; r++) {
-      for (let c = 0; c < this.gameBoard[0].length; c++) {
-        fn.call(this, this.gameBoard[r][c], r, c);
+    for (let r = 0; r < this.board.length; r++) {
+      for (let c = 0; c < this.board[0].length; c++) {
+        fn.call(this, this.board[r][c], r, c);
       }
     }
   }
@@ -28,15 +28,15 @@ class Game {
       if (!this.inRange(r, null)) continue;
       for (let c = col - 1; c <= col + 1; c++) {
         if (!this.inRange(null, c)) continue;
-        value = fn.call(this, this.gameBoard[r][c], r, c, value);
+        value = fn.call(this, this.board[r][c], r, c, value);
       }
     }
     return value;
   }
 
   inRange(row, col) {
-    const rowRange = r => r >= 0 && r < this.gameBoard.length;
-    const colRange = c => c >= 0 && c < this.gameBoard[0].length;
+    const rowRange = r => r >= 0 && r < this.board.length;
+    const colRange = c => c >= 0 && c < this.board[0].length;
     if (row === null) {
       return colRange(col);
     } else if (col === null) {
@@ -47,18 +47,21 @@ class Game {
 
   move(row, col) {
     const setCell = (row, col, count) => {
-      this.gameBoard[row][col].value = `${count}`;
+      this.board[row][col].value = `${count}`;
     };
     const isBomb = (row, col) => {
-      return this.gameBoard[row][col].bomb;
+      return this.board[row][col].bomb;
     };
     const isRevealed = cell => {
       return cell.value !== "_";
     };
     const countBombs = (row, col) => {
-      return this.cellOperation(row, col, (cell, r, c, v) => {
-        return v + Number(cell.bomb);
-      });
+      return this.cellOperation(
+        row,
+        col,
+        (cell, r, c, v) => v + Number(cell.bomb),
+        0
+      );
     };
 
     if (isBomb(row, col)) {
