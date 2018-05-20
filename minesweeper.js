@@ -1,28 +1,50 @@
+const BLANK_CELL = "🔲";
+const MARKED_CELL = "⚠️";
+const BOOM = "💥";
+const NUMBERS = ["0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣"];
+
 class Game {
   constructor(bombs) {
     // setup game board
     this.board = bombs.map(row => {
       return row.map(col => ({
         bomb: Boolean(col),
-        value: "_"
+        flagged: false,
+        value: null,
+        get hidden() {
+          return this.value === null;
+        },
+        get icon() {
+          return NUMBERS[this.value] + " ";
+        }
       }));
     });
   }
 
   render() {
-    return this.done(
-      this.board.map(row => {
-        return row.map(col => col.value);
-      })
-    );
+    return this.board.map(row => {
+      return row.map(col => {
+        if (col.hidden) {
+          if (col.flagged) {
+            return MARKED_CELL + " ";
+          }
+          return BLANK_CELL;
+        }
+        if (col.bomb) {
+          return BOOM;
+        }
+        return col.icon;
+      });
+    });
   }
 
-  boardOperation(fn) {
+  boardOperation(fn, value) {
     for (let r = 0; r < this.board.length; r++) {
       for (let c = 0; c < this.board[0].length; c++) {
-        fn.call(this, this.board[r][c], r, c);
+        value = fn.call(this, this.board[r][c], r, c, value);
       }
     }
+    return value;
   }
 
   cellOperation(row, col, fn, value = null) {
@@ -54,40 +76,55 @@ class Game {
     const isBomb = (row, col) => {
       return this.board[row][col].bomb;
     };
-    const isRevealed = cell => {
-      return cell.value !== "_";
-    };
     const countBombs = (row, col) => {
-      return this.cellOperation(
-        row,
-        col,
-        (cell, r, c, v) => v + Number(cell.bomb),
-        0
-      );
+      return this.cellOperation(row, col, (cell, r, c, v) => v + cell.bomb, 0);
     };
 
     if (isBomb(row, col)) {
       // you lose!
       this.boardOperation((cell, r, c) => {
-        if (!isRevealed(cell)) {
-          setCell(r, c, cell.bomb ? "B" : `${countBombs(r, c)}`);
+        if (cell.hidden) {
+          setCell(r, c, countBombs(r, c));
         }
       });
     } else {
       const reveal = (row, col) => {
         const count = countBombs(row, col);
-        setCell(row, col, `${count}`);
+        setCell(row, col, count);
         if (count === 0) {
           this.cellOperation(row, col, (cell, r, c) => {
-            if (isRevealed(cell)) return;
-            reveal(r, c);
+            if (cell.hidden) reveal(r, c);
           });
         }
       };
       reveal(row, col);
     }
 
-    return this.render();
+    return this.done();
+  }
+
+  flag(row, col) {
+    this.board[row][col].flagged = true;
+    return this.done();
+  }
+
+  get bombCount() {
+    return this.boardOperation((cell, r, c, v) => v + cell.bomb, 0);
+  }
+
+  get score() {
+    const ctx = this;
+    class Score extends Number {
+      get total() {
+        return ctx.bombCount;
+      }
+      get win() {
+        return +this === this.total;
+      }
+    }
+    return new Score(
+      this.boardOperation((cell, r, c, s) => s + (cell.bomb && cell.flagged), 0)
+    );
   }
 
   done(state) {
