@@ -26,15 +26,6 @@ class Game {
     );
   }
 
-  done(state) {
-    const ctx = this;
-    return {
-      then(fn) {
-        fn.call(ctx, state);
-      }
-    };
-  }
-
   boardOperation(fn, value) {
     for (let r = 0; r < this.board.length; r++) {
       for (let c = 0; c < this.board[0].length; c++) {
@@ -108,6 +99,15 @@ class Game {
   flag(row, col) {
     this.board[row][col].flagged = true;
     return this.done();
+  }
+
+  done(state) {
+    const ctx = this;
+    return {
+      then(fn) {
+        fn.call(ctx, state);
+      }
+    };
   }
 }
 
