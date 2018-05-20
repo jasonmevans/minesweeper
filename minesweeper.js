@@ -9,9 +9,10 @@ class Game {
     this.board = bombs.map(row => {
       return row.map(col => ({
         bomb: Boolean(col),
-        value: BLANK_CELL,
+        flagged: false,
+        value: null,
         get hidden() {
-          return this.value === BLANK_CELL || this.value === MARKED_CELL;
+          return this.value === null;
         }
       }));
     });
@@ -104,11 +105,9 @@ class Game {
     return this.render();
   }
 
-  mark(row, col) {
-    if ((this.board[row][col].value = BLANK_CELL)) {
-      this.board[row][col].value = MARKED_CELL;
-    }
-    return this.render();
+  flag(row, col) {
+    this.board[row][col].flagged = true;
+    return this.done();
   }
 }
 
