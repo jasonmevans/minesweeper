@@ -64,7 +64,6 @@ module.exports = class Gameboard {
     const columns = Array.from(Array(this.width), (i, n) =>
       n.toLocaleString("en-US", { minimumIntegerDigits: 2 })
     );
-
     return [
       columns,
       ...this.cells.map((row, r) => {

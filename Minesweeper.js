@@ -1,7 +1,9 @@
 const Gameboard = require("./Gameboard");
+const Doneable = require("./Doneable");
 
-class Minesweeper {
+class Minesweeper extends Doneable {
   constructor(bombs) {
+    super();
     // setup game board
     this.board = new Gameboard(bombs);
   }
@@ -62,15 +64,6 @@ class Minesweeper {
     return new Score(
       this.board.boardOp((cell, r, c, s) => s + (cell.bomb && cell.flagged))
     );
-  }
-
-  done(state) {
-    const ctx = this;
-    return {
-      then(fn) {
-        fn.call(ctx, state);
-      }
-    };
   }
 }
 
