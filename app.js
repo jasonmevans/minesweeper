@@ -22,7 +22,8 @@ const game = new Minesweeper(bombs);
 function log() {
   console.clear();
   console.log(
-    this.render()
+    this.board
+      .render()
       .map((line, i) => line.join(" "))
       .join("\n")
   );
