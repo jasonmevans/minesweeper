@@ -63,7 +63,7 @@ class Minesweeper {
     });
   }
 
-  boardOperation(fn, value = null) {
+  boardOp(fn, value = null) {
     for (let r = 0; r < this.board.length; r++) {
       for (let c = 0; c < this.board[0].length; c++) {
         value = fn.call(this, this.board[r][c], r, c, value);
@@ -72,7 +72,7 @@ class Minesweeper {
     return value;
   }
 
-  cellOperation(row, col, fn, value = null) {
+  cellOp(row, col, fn, value = null) {
     for (let r = row - 1; r <= row + 1; r++) {
       if (!this.inRange(r, null)) continue;
       for (let c = col - 1; c <= col + 1; c++) {
@@ -102,12 +102,12 @@ class Minesweeper {
       return this.board[row][col].bomb;
     };
     const countBombs = (row, col) => {
-      return this.cellOperation(row, col, (cell, r, c, v) => v + cell.bomb);
+      return this.cellOp(row, col, (cell, r, c, v) => v + cell.bomb);
     };
 
     if (isBomb(row, col)) {
       // you lose!
-      this.boardOperation((cell, r, c) => {
+      this.boardOp((cell, r, c) => {
         if (cell.hidden) {
           setCell(r, c, countBombs(r, c));
         }
@@ -117,7 +117,7 @@ class Minesweeper {
         const count = countBombs(row, col);
         setCell(row, col, count);
         if (count === 0) {
-          this.cellOperation(row, col, (cell, r, c) => {
+          this.cellOp(row, col, (cell, r, c) => {
             if (cell.hidden) reveal(r, c);
           });
         }
@@ -134,7 +134,7 @@ class Minesweeper {
   }
 
   get bombCount() {
-    return this.boardOperation((cell, r, c, v) => v + cell.bomb);
+    return this.boardOp((cell, r, c, v) => v + cell.bomb);
   }
 
   get score() {
@@ -148,7 +148,7 @@ class Minesweeper {
       }
     }
     return new Score(
-      this.boardOperation((cell, r, c, s) => s + (cell.bomb && cell.flagged))
+      this.boardOp((cell, r, c, s) => s + (cell.bomb && cell.flagged))
     );
   }
 
