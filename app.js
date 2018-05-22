@@ -23,8 +23,8 @@ function log(ctx, state) {
   console.clear();
   console.log(
     ctx.board
-      .render()
-      .map((line, i) => line.join(" "))
+      .render(true)
+      .map(line => line.join(" "))
       .join("\n")
   );
   console.log(

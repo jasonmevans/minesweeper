@@ -1,4 +1,4 @@
-const Cell = require("./Cell");
+const Cell = require("./EmojiCell");
 
 module.exports = class Gameboard {
   constructor(bombs) {
@@ -56,33 +56,22 @@ module.exports = class Gameboard {
     return rowRange(row) && colRange(col);
   }
 
-  render() {
-    const columns = Array.from(Array(this.width), (i, n) =>
-      n.toLocaleString("en-US", { minimumIntegerDigits: 2 })
-    );
-    return [
-      columns,
-      ...this.cells.map((row, r) => {
-        return row.map(col => {
-          if (col.hidden) {
-            if (col.flagged) {
-              return MARKED_CELL + " ";
-            }
-            return BLANK_CELL;
-          }
-          if (col.bomb) {
-            return BOOM;
-          }
-          return col.icon + " ";
-        });
-      }),
-      columns
-    ].map((row, r) => {
-      const n =
-        r === 0 || r - 1 === this.height
-          ? "--"
-          : (r - 1).toLocaleString("en-US", { minimumIntegerDigits: 2 });
-      return [n, ...row, n];
+  render(numbered = false) {
+    const addNumbering = rows => {
+      const columns = Array.from(Array(this.width), (i, n) =>
+        n.toLocaleString("en-US", { minimumIntegerDigits: 2 })
+      );
+      return [columns, ...rows, columns].map((row, r) => {
+        const n =
+          r === 0 || r - 1 === this.height
+            ? "--"
+            : (r - 1).toLocaleString("en-US", { minimumIntegerDigits: 2 });
+        return [n, ...row, n];
+      });
+    };
+    const rendered = this.cells.map(row => {
+      return row.map(col => col.render());
     });
+    return numbered ? addNumbering(rendered) : rendered;
   }
 };
