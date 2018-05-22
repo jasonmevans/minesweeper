@@ -2,16 +2,16 @@ const Cell = require("./EmojiCell");
 
 module.exports = class Gameboard {
   constructor(bombs) {
-    this.cells = bombs.map(row => {
-      return row.map(
+    this.cells = bombs.map(row =>
+      row.map(
         col =>
           new Cell({
             bomb: Boolean(col),
             flagged: false,
             value: null
           })
-      );
-    });
+      )
+    );
   }
 
   cellAt(row, col) {

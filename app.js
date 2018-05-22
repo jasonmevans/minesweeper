@@ -19,16 +19,16 @@ const bombs = [
 
 const game = new Minesweeper(bombs);
 
-function log(ctx, state) {
+function log(state) {
   console.clear();
   console.log(
-    ctx.board
+    this.board
       .render(true)
       .map(line => line.join(" "))
       .join("\n")
   );
   console.log(
-    `Score: ${ctx.score}/${ctx.score.total}, ${ctx.score.win && "Win!"}`
+    `Score: ${this.score}/${this.score.total}, ${this.score.win && "Win!"}`
   );
 }
 

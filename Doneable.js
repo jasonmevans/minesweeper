@@ -1,5 +1,10 @@
 module.exports = class Doneable {
   done(state) {
-    return Promise.resolve(this, state);
+    const ctx = this;
+    return {
+      then(fn) {
+        return fn.apply(ctx, state);
+      }
+    };
   }
 };
