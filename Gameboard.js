@@ -1,9 +1,5 @@
 const Cell = require("./Cell");
 
-const BLANK_CELL = "🔲";
-const MARKED_CELL = "⚠️";
-const BOOM = "💥";
-
 module.exports = class Gameboard {
   constructor(bombs) {
     this.cells = bombs.map(row => {

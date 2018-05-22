@@ -1,5 +1,3 @@
-const NUMBERS = ["0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣"];
-
 module.exports = class Cell {
   constructor({ value, bomb, flagged }) {
     this.value = value;
@@ -10,6 +8,18 @@ module.exports = class Cell {
     return this.value === null;
   }
   get icon() {
-    return NUMBERS[this.value];
+    return ` ${this.value}`;
+  }
+  render() {
+    if (this.hidden) {
+      if (this.flagged) {
+        return "FF";
+      }
+      return "##";
+    }
+    if (this.bomb) {
+      return "BB";
+    }
+    return this.value === 0 ? "  " : this.icon;
   }
 };
