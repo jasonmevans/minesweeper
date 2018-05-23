@@ -35,25 +35,16 @@ module.exports = class Gameboard {
   }
 
   cellOp(row, col, fn, value = null) {
+    const rowRange = r => r >= 0 && r < this.height;
+    const colRange = c => c >= 0 && c < this.width;
     for (let r = row - 1; r <= row + 1; r++) {
-      if (!this.inRange(r, null)) continue;
+      if (!rowRange(r)) continue;
       for (let c = col - 1; c <= col + 1; c++) {
-        if (!this.inRange(null, c)) continue;
+        if (!colRange(c)) continue;
         value = fn.call(this, this.cellAt(r, c), r, c, value);
       }
     }
     return value;
-  }
-
-  inRange(row, col) {
-    const rowRange = r => r >= 0 && r < this.height;
-    const colRange = c => c >= 0 && c < this.width;
-    if (row === null) {
-      return colRange(col);
-    } else if (col === null) {
-      return rowRange(row);
-    }
-    return rowRange(row) && colRange(col);
   }
 
   render(numbered = false) {
