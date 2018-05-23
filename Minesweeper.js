@@ -9,35 +9,8 @@ class Minesweeper extends Doneable {
   }
 
   move(row, col) {
-    const setCell = (row, col, value) => {
-      this.board.cellAt(row, col).value = value;
-    };
-    const isBomb = (row, col) => {
-      return this.board.cellAt(row, col).bomb;
-    };
-    const countBombs = (row, col) => {
-      return this.board.cellOp(row, col, (cell, r, c, v) => v + cell.bomb);
-    };
 
-    if (isBomb(row, col)) {
-      // you lose!
-      this.board.boardOp((cell, r, c) => {
-        if (cell.hidden) {
-          setCell(r, c, countBombs(r, c));
-        }
-      });
-    } else {
-      const reveal = (row, col) => {
-        const count = countBombs(row, col);
-        setCell(row, col, count);
-        if (count === 0) {
-          this.board.cellOp(row, col, (cell, r, c) => {
-            if (cell.hidden) reveal(r, c);
-          });
-        }
-      };
-      reveal(row, col);
-    }
+    // ...
 
     return this.done();
   }
