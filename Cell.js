@@ -13,13 +13,13 @@ module.exports = class Cell {
   render() {
     if (this.hidden) {
       if (this.flagged) {
-        return "FF";
+        return 'FF';
       }
-      return "##";
+      return '##';
     }
     if (this.bomb) {
-      return "BB";
+      return 'BB';
     }
-    return this.value === 0 ? "  " : this.icon;
+    return this.value === 0 ? '  ' : this.icon;
   }
 };

@@ -1,5 +1,5 @@
-const Gameboard = require("./Gameboard");
-const Doneable = require("./Doneable");
+const Gameboard = require('./Gameboard');
+const Doneable = require('./Doneable');
 
 class Minesweeper extends Doneable {
   constructor(bombs) {

@@ -1,4 +1,4 @@
-const Minesweeper = require("./minesweeper");
+const Minesweeper = require('./minesweeper');
 
 // 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19
 const bombs = [
@@ -24,11 +24,11 @@ function log(state) {
   console.log(
     this.board
       .render(true)
-      .map(line => line.join(" "))
-      .join("\n")
+      .map(line => line.join(' '))
+      .join('\n')
   );
   console.log(
-    `Score: ${this.score}/${this.score.total}, ${this.score.win && "Win!"}`
+    `Score: ${this.score}/${this.score.total}, ${this.score.win && 'Win!'}`
   );
 }
 
